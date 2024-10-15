@@ -1,6 +1,6 @@
 package groq
 
-// ModelsList contains the available models
+// ModelsList contains the available models, for all supported models visit https://console.groq.com/docs/models.
 var ModelsList = []string{
 	"mixtral-8x7b-32768",
 	"llama2-70b-4096",
