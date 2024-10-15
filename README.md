@@ -275,3 +275,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Disclaimer
 
 This is an unofficial SDK and is not affiliated with or endorsed by Groq, Inc.
+
+<br/><br/>
+
+[![Powered by Groq](https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg)](https://groq.com)
