@@ -1,21 +1,21 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"os"
+    "context"
+    "fmt"
+    "log"
+    "os"
 
-	"github.com/wansatya/groq-go/pkg/groq"
-	"github.com/joho/godotenv"
+    "github.com/wansatya/groq-go/pkg/groq"
+    "github.com/joho/godotenv"
 )
 
 func init() {
-	// Load the .env file in the current directory
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+    // Load the .env file in the current directory
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
 }
 
 func main() {
