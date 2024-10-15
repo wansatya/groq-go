@@ -14,37 +14,66 @@ func init() {
 	// Load the .env file in the current directory
 	err := godotenv.Load()
 	if err != nil {
-			log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file")
 	}
 }
 
 func main() {
-	apiKey := os.Getenv("GROQ_API_KEY")
-	if apiKey == "" {
-		log.Fatal("GROQ_API_KEY not found in environment variables")
-	}
+    apiKey := os.Getenv("GROQ_API_KEY")
+    if apiKey == "" {
+        log.Fatal("GROQ_API_KEY not found in environment variables")
+    }
 
-	client := groq.NewClient(apiKey)
+    client := groq.NewClient(apiKey)
 
-	req := groq.ChatCompletionRequest{
-		Model: "mixtral-8x7b-32768",
-		Messages: []groq.Message{
-			{Role: "user", Content: "What is Golang?"},
-		},
-		MaxTokens:   100,
-		Temperature: 0.7,
-	}
+    // Add system prompts
+    client.AddSystemPrompt("You are a helpful assistant. Always be polite and concise.")
+    client.AddSystemPrompt("Provide examples when explaining concepts.")
 
-	ctx := context.Background()
-	resp, err := client.CreateChatCompletion(ctx, req)
-	if err != nil {
-		log.Fatalf("Error creating chat completion: %v", err)
-	}
+    // Example with default text response
+    reqText := groq.ChatCompletionRequest{
+        Model: "mixtral-8x7b-32768",
+        Messages: []groq.Message{
+            {Role: "user", Content: "What is Golang?"},
+        },
+        MaxTokens:   100,
+        Temperature: 0.7,
+    }
 
-	if len(resp.Choices) > 0 {
-		fmt.Println("Response from Groq API:")
-		fmt.Println(resp.Choices[0].Message.Content)
-	} else {
-		fmt.Println("No response received from API")
-	}
+    // Example with JSON response
+    reqJSON := groq.ChatCompletionRequest{
+        Model: "mixtral-8x7b-32768",
+        Messages: []groq.Message{
+            {Role: "user", Content: "What is Golang? Respond in JSON format."},
+        },
+        MaxTokens:   512,
+        Temperature: 0.25,
+        ResponseFormat: &groq.ResponseFormat{
+            Type: "json_object",
+        },
+    }
+
+    ctx := context.Background()
+
+    // Make request with text response
+    respText, err := client.CreateChatCompletion(ctx, reqText)
+    if err != nil {
+        log.Fatalf("Error creating chat completion (text): %v", err)
+    }
+
+    if len(respText.Choices) > 0 {
+        fmt.Println("Text Response from Groq API:\n")
+        fmt.Println(respText.Choices[0].Message.Content)
+    }
+
+    // Make request with JSON response
+    respJSON, err := client.CreateChatCompletion(ctx, reqJSON)
+    if err != nil {
+        log.Fatalf("Error creating chat completion (JSON): %v", err)
+    }
+
+    if len(respJSON.Choices) > 0 {
+        fmt.Println("\nJSON Response from Groq API:\n")
+        fmt.Println(respJSON.Choices[0].Message.Content)
+    }
 }

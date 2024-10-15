@@ -52,21 +52,21 @@ Here's a quick example of how to use the SDK:
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
-    "os"
+	"context"
+	"fmt"
+	"log"
+	"os"
 
-    "github.com/wansatya/groq-go/pkg/groq"
-    "github.com/joho/godotenv"
+	"github.com/wansatya/groq-go/pkg/groq"
+	"github.com/joho/godotenv"
 )
 
 func init() {
-  // Load the .env file in the current directory
-  err := godotenv.Load()
-    if err != nil {
-      log.Fatal("Error loading .env file")
-    }
+	// Load the .env file in the current directory
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
 
 func main() {
@@ -77,8 +77,13 @@ func main() {
 
     client := groq.NewClient(apiKey)
 
-    req := groq.ChatCompletionRequest{
-        Model: "mixtral-8x7b-32768",
+    // Add system prompts
+    client.AddSystemPrompt("You are a helpful assistant. Always be polite and concise.")
+    client.AddSystemPrompt("Provide examples when explaining concepts.")
+
+    // Example with default text response
+    reqText := groq.ChatCompletionRequest{
+        Model: os.Getenv("GROQ_MODEL"),
         Messages: []groq.Message{
             {Role: "user", Content: "What is Golang?"},
         },
@@ -87,25 +92,53 @@ func main() {
     }
 
     ctx := context.Background()
-    resp, err := client.CreateChatCompletion(ctx, req)
+
+    // Make request with text response
+    respText, err := client.CreateChatCompletion(ctx, reqText)
     if err != nil {
-        log.Fatalf("Error creating chat completion: %v", err)
+        log.Fatalf("Error creating chat completion (text): %v", err)
     }
 
-    if len(resp.Choices) > 0 {
-        fmt.Println("Response from Groq API:")
-        fmt.Println(resp.Choices[0].Message.Content)
-    } else {
-        fmt.Println("No response received from API")
+    if len(respText.Choices) > 0 {
+        fmt.Println("Text Response from Groq API:\n")
+        fmt.Println(respText.Choices[0].Message.Content)
     }
 }
+```
+
+To get response in JSON, use:
+
+```go
+    // Example with JSON response
+    reqJSON := groq.ChatCompletionRequest{
+        Model: "mixtral-8x7b-32768",
+        Messages: []groq.Message{
+            {Role: "user", Content: "What is Golang? Respond in JSON format."},
+        },
+        MaxTokens:   512,
+        Temperature: 0.25,
+        ResponseFormat: &groq.ResponseFormat{
+            Type: "json_object",
+        },
+    }
+
+    // Make request with JSON response
+    respJSON, err := client.CreateChatCompletion(ctx, reqJSON)
+    if err != nil {
+        log.Fatalf("Error creating chat completion (JSON): %v", err)
+    }
+
+    if len(respJSON.Choices) > 0 {
+        fmt.Println("\nJSON Response from Groq API:\n")
+        fmt.Println(respJSON.Choices[0].Message.Content)
+    }
 ```
 
 ## Features
 
 - Simple and intuitive API
 - Support for chat completions
-- Configurable base URL and timeout
+- Configurable base URL, timeout and system prompt
 - Context support for cancellation and timeouts
 
 ## Documentation
