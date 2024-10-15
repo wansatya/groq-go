@@ -15,7 +15,7 @@ type Client struct {
     BaseURL       string
     APIKey        string
     HTTPClient    *http.Client
-    SystemPrompts []Message // Added this field
+    SystemPrompts []Message
 }
 
 // NewClient creates a new Groq API client
@@ -26,29 +26,18 @@ func NewClient(apiKey string) *Client {
         HTTPClient: &http.Client{
             Timeout: defaultTimeout,
         },
-        SystemPrompts: []Message{}, // Initialize as empty slice
     }
 }
 
-// SetBaseURL allows changing the base URL for the API
-func (c *Client) SetBaseURL(url string) {
-    c.BaseURL = url
-}
-
-// SetTimeout allows changing the HTTP client timeout
-func (c *Client) SetTimeout(timeout time.Duration) {
-    c.HTTPClient.Timeout = timeout
-}
-
-// AddSystemPrompt adds a system prompt to be included in all requests
-func (c *Client) AddSystemPrompt(content string) {
+// SetBasePrompt adds a system prompt to be included in all requests
+func (c *Client) SetBasePrompt(content string) {
     c.SystemPrompts = append(c.SystemPrompts, Message{
         Role:    "system",
         Content: content,
     })
 }
 
-// ClearSystemPrompts removes all system prompts
-func (c *Client) ClearSystemPrompts() {
+// ClearBasePrompts removes all system prompts
+func (c *Client) ClearBasePrompts() {
     c.SystemPrompts = nil
 }
