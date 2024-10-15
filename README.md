@@ -1,6 +1,8 @@
 # Groq Go SDK
 
-This is an unofficial Go SDK for the Groq API. It provides a simple and efficient way to interact with Groq's AI models using Go.
+This is an unofficial Go SDK for the [Groq LPU™ AI inference](https://groq.com/inference). 
+
+It provides a simple and efficient way to interact with Groq's AI models using Go.
 
 ## Project Structure
 
@@ -60,11 +62,11 @@ import (
 )
 
 func init() {
-	// Load the .env file in the current directory
-	err := godotenv.Load()
-	if err != nil {
-			log.Fatal("Error loading .env file")
-	}
+  // Load the .env file in the current directory
+  err := godotenv.Load()
+    if err != nil {
+      log.Fatal("Error loading .env file")
+    }
 }
 
 func main() {
